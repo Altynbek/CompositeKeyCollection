@@ -87,12 +87,12 @@ namespace KeyCollectionTest.Classes
             {
                 try
                 {
-                    rwLock.EnterReadLock();
+                    rwLock.EnterWriteLock();
                     return base.Keys;
                 }
                 finally
                 {
-                    rwLock.ExitReadLock();
+                    rwLock.ExitWriteLock();
                 }
             }
         }

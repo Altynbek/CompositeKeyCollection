@@ -4,12 +4,12 @@ namespace KeyCollectionTest.Classes
 {
     public class UserType
     {
-        public UserType(DateTime birthday)
+        public UserType(DateTime dt)
         {
-            Birthday = birthday;
+            Date = dt;
         }
 
-        public DateTime Birthday { get; set; }
+        public DateTime Date { get; set; }
 
         public override bool Equals(object obj)
         {
@@ -17,13 +17,13 @@ namespace KeyCollectionTest.Classes
                 return false;
 
             UserType param = obj as UserType;
-            bool equals = this.Birthday == param.Birthday;
+            bool equals = this.Date == param.Date;
             return equals;
         }
 
         public override int GetHashCode()
         {
-            return Birthday.GetHashCode();
+            return Date.GetHashCode();
         }
 
         public static bool operator ==(UserType uType1, UserType uType2)
@@ -34,17 +34,17 @@ namespace KeyCollectionTest.Classes
             if (((object)uType1 == null) || ((object)uType2 == null))
                 return false;
 
-            return uType1.Birthday == uType2.Birthday;
+            return uType1.Date == uType2.Date;
         }
 
         public static bool operator !=(UserType uType1, UserType uType2)
         {
-            return !(uType1.Birthday == uType2.Birthday);
+            return !(uType1.Date == uType2.Date);
         }
 
         public override string ToString()
         {
-            return Birthday.ToString();
+            return Date.ToString();
         }
     }
 

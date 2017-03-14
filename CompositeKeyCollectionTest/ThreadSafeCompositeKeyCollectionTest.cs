@@ -17,12 +17,12 @@ namespace CompositeKeyTest
         {
             _concurentCollection = new ThreadSafeCompositeKeyCollection<UserType, string, int>();
 
-            Task.Run(() => RunFirstWriteThread()).Wait();
-            Task.Run(() => RunSecondWriteThread()).Wait();
-            Task.Run(() => RunThirdWriteThread()).Wait();
-            Task.Run(() => RunFirstReadThread()).Wait();
-            Task.Run(() => RunSecondReadThread()).Wait();
-            Task.Run(() => RunFirstRemovingThread()).Wait();
+            Task.Run(() => RunFirstWriteThread());
+            Task.Run(() => RunSecondWriteThread());
+            Task.Run(() => RunThirdWriteThread());
+            Task.Run(() => RunFirstReadThread());
+            Task.Run(() => RunSecondReadThread());
+            Task.Run(() => RunFirstRemovingThread());
         }
 
         private void RunFirstWriteThread()

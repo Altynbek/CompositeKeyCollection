@@ -246,20 +246,11 @@ namespace KeyCollectionTest.POC
         #region Interface implementation
         public void Commit(Enlistment enlistment)
         {
-            try
-            {
-                enlistment.Done();
-            }
-            catch (Exception ex)
-            {
-                Rollback(enlistment);
-                throw;
-            }
+            enlistment.Done();
         }
 
         public void InDoubt(Enlistment enlistment)
         {
-            int a = 1;
         }
 
         public void Prepare(PreparingEnlistment preparingEnlistment)

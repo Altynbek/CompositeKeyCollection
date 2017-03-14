@@ -60,6 +60,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="ThreadSafePerformanceTest.cs" />
     <Compile Include="ThreadSafeCompositeKeyCollectionTest.cs" />
     <Compile Include="CompositeKeyCollectionTest.cs" />
     <Compile Include="CompositeKeyTest.cs" />

@@ -38,7 +38,6 @@ namespace KeyCollectionTest.POC
             Add(key, data);
         }
 
-
         public virtual void Remove(TKey1 key1, TKey2 key2)
         {
             var compositeKey = new CompositeKey<TKey1, TKey2>(key1, key2);
@@ -183,41 +182,33 @@ namespace KeyCollectionTest.POC
             if (currentTx != null)
                 currentTx.EnlistVolatile(this, EnlistmentOptions.None);
 
-            try
+            _dictionary.Add(key, data);
+
+            // add to id collection
+            if (_idDictionary.ContainsKey(key.Id))
             {
-                _dictionary.Add(key, data);
-
-                // add to id collection
-                if (_idDictionary.ContainsKey(key.Id))
-                {
-                    var dictionaryWithNames = _idDictionary[key.Id];
-                    dictionaryWithNames.Add(key.Name, data);
-                }
-                else
-                {
-                    var dictionaryWithNames = new Dictionary<TKey2, TData>();
-                    dictionaryWithNames.Add(key.Name, data);
-                    _idDictionary[key.Id] = dictionaryWithNames;
-                }
-
-
-                // add to named collection
-                if (_namedDictionary.ContainsKey(key.Name))
-                {
-                    var dictionaryWithId = _namedDictionary[key.Name];
-                    dictionaryWithId.Add(key.Id, data);
-                }
-                else
-                {
-                    var dictionaryWithId = new Dictionary<TKey1, TData>();
-                    dictionaryWithId.Add(key.Id, data);
-                    _namedDictionary[key.Name] = dictionaryWithId;
-                }
+                var dictionaryWithNames = _idDictionary[key.Id];
+                dictionaryWithNames.Add(key.Name, data);
             }
-            catch (Exception ex)
+            else
             {
-                Console.WriteLine("exception occured");
+                var dictionaryWithNames = new Dictionary<TKey2, TData>();
+                dictionaryWithNames.Add(key.Name, data);
+                _idDictionary[key.Id] = dictionaryWithNames;
+            }
 
+
+            // add to named collection
+            if (_namedDictionary.ContainsKey(key.Name))
+            {
+                var dictionaryWithId = _namedDictionary[key.Name];
+                dictionaryWithId.Add(key.Id, data);
+            }
+            else
+            {
+                var dictionaryWithId = new Dictionary<TKey1, TData>();
+                dictionaryWithId.Add(key.Id, data);
+                _namedDictionary[key.Name] = dictionaryWithId;
             }
         }
 
@@ -257,18 +248,26 @@ namespace KeyCollectionTest.POC
         #region Interface implementation
         public void Commit(Enlistment enlistment)
         {
-            enlistment.Done();
-            // save state
+            try
+            {
+                enlistment.Done();
+            }
+            catch (Exception ex)
+            {
+                Rollback(enlistment);
+                throw;
+            }
         }
 
         public void InDoubt(Enlistment enlistment)
         {
+            int a = 1;
         }
 
         public void Prepare(PreparingEnlistment preparingEnlistment)
         {
-            //preparingEnlistment.Prepared();
-            preparingEnlistment.ForceRollback();
+            preparingEnlistment.Prepared();
+            //preparingEnlistment.ForceRollback();
         }
 
         public void Rollback(Enlistment enlistment)
@@ -312,8 +311,9 @@ namespace KeyCollectionTest.POC
                     scope.Complete();
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
+                throw;
             }
         }
 
@@ -327,7 +327,7 @@ namespace KeyCollectionTest.POC
                     scope.Complete();
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
             }
         }

@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace KeyCollectionTest.Classes
 {
-    public class CompositeKey<TKey1, TKey2> : ICompositeKey<TKey1, TKey2>
-        where TKey1 : class
-        where TKey2 : class
+    public class CompositeKey<TKey1, TKey2>
     {
 
         public TKey1 Id { get; set; }
@@ -25,8 +18,8 @@ namespace KeyCollectionTest.Classes
             unchecked        
             {
                 int hash = 17;
-                hash = hash * 23 + Id.GetHashCode();
-                hash = hash * 23 + Name.GetHashCode();
+                hash = hash * 23 + (Id != null ? Id.GetHashCode() : 0);
+                hash = hash * 23 + (Name != null ? Name.GetHashCode() : 0);
                 return hash;
             }
         }
@@ -37,7 +30,7 @@ namespace KeyCollectionTest.Classes
                 return false;
 
             CompositeKey<TKey1, TKey2> compositeKey = obj as CompositeKey<TKey1, TKey2>;
-            bool equals = this.Id.Equals(compositeKey.Id) && this.Name == compositeKey.Name;
+            bool equals = this.Id.Equals(compositeKey.Id) && this.Name.Equals(compositeKey.Name);
             return equals;
         }
 
@@ -54,13 +47,13 @@ namespace KeyCollectionTest.Classes
             if (((object)item1 == null) || ((object)item2 == null))
                 return false;
 
-            bool equals = (item1.Id.Equals(item2.Id) && item1.Name == item2.Name);
+            bool equals = (item1.Id.Equals(item2.Id) && item1.Name.Equals(item2.Name));
             return equals;
         }
 
         public static bool operator !=(CompositeKey<TKey1, TKey2> item1, CompositeKey<TKey1, TKey2> item2)
         {
-            bool notEquals = !(item1.Id.Equals(item2.Id) && item1.Name == item2.Name);
+            bool notEquals = !(item1.Id.Equals(item2.Id) && item1.Name.Equals(item2.Name));
             return notEquals;
         }
     }

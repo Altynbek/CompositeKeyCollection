@@ -9,25 +9,34 @@ namespace CompositeKeyTest
     public class TransactionalCompositeKeyCollectionTest
     {
         [TestMethod]
-        public void PerformTransactionsTest()
+        [ExpectedException(typeof(ArgumentNullException), "Passed composite key arguments can't be null")]
+        public void RollBackTransactionWhenExceptionOccured()
         {
             var collection = new TransactionalDictionary<UserType, string, int>();
             collection.Add(new UserType(DateTime.Now), null, 10);
-
-            int expectedRecordsCount = 1;
-            int actualRecordCount = collection.Count;
-            Assert.AreNotEqual(expectedRecordsCount, actualRecordCount);
-
-            var key1 = new UserType(DateTime.Today);
-            var key2 = "Analytics";
-            collection.Add(key1, key2, 20);
-            actualRecordCount = collection.Count;
-            Assert.AreEqual(expectedRecordsCount, actualRecordCount);
-
-            collection.Remove(key1, "Managers");
-            actualRecordCount = collection.Count;
-            expectedRecordsCount = 1;
-            Assert.AreEqual(expectedRecordsCount, actualRecordCount);
         }
+
+        [TestMethod]
+        public void DontBreakInternalDictionaryStateWhenExceptionOccured()
+        {
+            var collection = new TransactionalDictionary<UserType, string, int>();
+            collection.Add(new UserType(DateTime.Today), "Managers", 10);
+            collection.Add(new UserType(DateTime.Today), "Analitics", 15);
+            int expectedRecordsCount = 2;
+            Assert.AreEqual(expectedRecordsCount, collection.Count);
+
+            // adding an invalid object to the collection
+            try
+            {
+                collection.Add(null, "Developers", 20);
+            }
+            catch (ArgumentNullException ex) { }
+            Assert.AreEqual(expectedRecordsCount, collection.Count);
+
+            collection.Add(new UserType(DateTime.Today), "Developers", 20);
+            expectedRecordsCount = 3;
+            Assert.AreEqual(expectedRecordsCount, collection.Count);
+        }
+
     }
 }

@@ -54,7 +54,6 @@
   <ItemGroup>
     <Compile Include="Classes\CompositeKey.cs" />
     <Compile Include="Classes\CompositeKeyCollection.cs" />
-    <Compile Include="Classes\ICompositeKey.cs" />
     <Compile Include="Classes\ThreadSafeCompositeKeyCollection.cs" />
     <Compile Include="Classes\UserType.cs" />
     <Compile Include="POC\TransactionalDictionary.cs" />

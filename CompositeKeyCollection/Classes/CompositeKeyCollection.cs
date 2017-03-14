@@ -7,22 +7,13 @@ using System.Threading.Tasks;
 namespace KeyCollectionTest.Classes
 {
     public class CompositeKeyCollection<TKey1, Tkey2, TData>
-        where TKey1 : class
-        where Tkey2 : class
+        //where TKey1 : class
+        //where Tkey2 : class
     {
         #region Fields
-        protected Dictionary<CompositeKey<TKey1, Tkey2>, TData> _dictionary;
-        protected Dictionary<TKey1, Dictionary<Tkey2, TData>> _idDictionary;
-        protected Dictionary<Tkey2, Dictionary<TKey1, TData>> _namedDictionary;
-        #endregion
-
-        #region Constructors
-        public CompositeKeyCollection()
-        {
-            _dictionary = new Dictionary<CompositeKey<TKey1, Tkey2>, TData>();
-            _idDictionary = new Dictionary<TKey1, Dictionary<Tkey2, TData>>();
-            _namedDictionary = new Dictionary<Tkey2, Dictionary<TKey1, TData>>();
-        }
+        protected Dictionary<CompositeKey<TKey1, Tkey2>, TData> _dictionary = new Dictionary<CompositeKey<TKey1, Tkey2>, TData>();
+        protected Dictionary<TKey1, Dictionary<Tkey2, TData>> _idDictionary = new Dictionary<TKey1, Dictionary<Tkey2, TData>>();
+        protected Dictionary<Tkey2, Dictionary<TKey1, TData>> _namedDictionary = new Dictionary<Tkey2, Dictionary<TKey1, TData>>();
         #endregion
 
 
@@ -36,32 +27,18 @@ namespace KeyCollectionTest.Classes
 
             // add to id collection
             if (_idDictionary.ContainsKey(key1))
-            {
-                var dictionaryWithNames = _idDictionary[key1];
-                dictionaryWithNames.Add(key2, data);
-            }
+                _idDictionary[key1].Add(key2, data);
             else
-            {
-                var dictionaryWithNames = new Dictionary<Tkey2, TData>();
-                dictionaryWithNames.Add(key2, data);
-                _idDictionary.Add(key1, dictionaryWithNames);
-            }
+                _idDictionary.Add(key1, new Dictionary<Tkey2, TData>() { { key2, data } });
 
 
             // add to named collection
             if (_namedDictionary.ContainsKey(key2))
-            {
-                var dictionaryWithId = _namedDictionary[key2];
-                dictionaryWithId.Add(key1, data);
-            }
+                _namedDictionary[key2].Add(key1, data);
             else
-            {
-                var dictionaryWithId = new Dictionary<TKey1, TData>();
-                dictionaryWithId.Add(key1, data);
-                _namedDictionary[key2] = dictionaryWithId;
-            }
-
+                _namedDictionary[key2] = new Dictionary<TKey1, TData>() { { key1, data } };
         }
+
 
         public virtual void Remove(TKey1 key1, Tkey2 key2)
         {
@@ -70,8 +47,6 @@ namespace KeyCollectionTest.Classes
 
             if (_dictionary.ContainsKey(key))
                 _dictionary.Remove(key);
-
-
 
             // remove from _idDictionary
             if (_idDictionary.ContainsKey(key1))
@@ -100,15 +75,12 @@ namespace KeyCollectionTest.Classes
         {
             CheckKeyParameters(key1, key2);
             var key = new CompositeKey<TKey1, Tkey2>(key1, key2);
-
-            bool contains = _dictionary.ContainsKey(key);
-            return contains;
+            return _dictionary.ContainsKey(key);
         }
 
         public virtual bool ContainsValue(TData data)
         {
-            bool contais = _dictionary.ContainsValue(data);
-            return contais;
+            return _dictionary.ContainsValue(data);
         }
 
         public virtual void Clear()
@@ -122,9 +94,7 @@ namespace KeyCollectionTest.Classes
         {
             get
             {
-                if (key1 == null && key2 == null)
-                    throw new ArgumentNullException("key1 and key2", "Key should not be nullable");
-
+                CheckKeyParameters(key1, key2);
                 var key = new CompositeKey<TKey1, Tkey2>(key1, key2);
                 return _dictionary[key];
             }

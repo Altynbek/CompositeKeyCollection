@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 namespace KeyCollectionTest.Classes
 {
     public class CompositeKeyCollection<TKey1, Tkey2, TData>
-        //where TKey1 : class
-        //where Tkey2 : class
     {
         #region Fields
         protected Dictionary<CompositeKey<TKey1, Tkey2>, TData> _dictionary = new Dictionary<CompositeKey<TKey1, Tkey2>, TData>();

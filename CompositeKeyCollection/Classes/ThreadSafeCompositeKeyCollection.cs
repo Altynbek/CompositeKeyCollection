@@ -8,8 +8,6 @@ using System.Threading;
 namespace KeyCollectionTest.Classes
 {
     public class ThreadSafeCompositeKeyCollection<Tkey1, Tkey2, TData> : CompositeKeyCollection<Tkey1, Tkey2, TData>
-        where Tkey1 : class
-        where Tkey2 : class
     {
         private ReaderWriterLockSlim rwLock = new ReaderWriterLockSlim();
 

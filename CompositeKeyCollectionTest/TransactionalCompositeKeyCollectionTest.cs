@@ -12,14 +12,14 @@ namespace CompositeKeyTest
         [ExpectedException(typeof(ArgumentNullException), "Passed composite key arguments can't be null")]
         public void RollBackTransactionWhenExceptionOccured()
         {
-            var collection = new TransactionalDictionary<UserType, string, int>();
+            var collection = new TransactionalCompositeKeyCollection<UserType, string, int>();
             collection.Add(new UserType(DateTime.Now), null, 10);
         }
 
         [TestMethod]
         public void DontBreakInternalDictionaryStateWhenExceptionOccured()
         {
-            var collection = new TransactionalDictionary<UserType, string, int>();
+            var collection = new TransactionalCompositeKeyCollection<UserType, string, int>();
             collection.Add(new UserType(DateTime.Today), "Managers", 10);
             collection.Add(new UserType(DateTime.Today), "Analitics", 15);
             int expectedRecordsCount = 2;

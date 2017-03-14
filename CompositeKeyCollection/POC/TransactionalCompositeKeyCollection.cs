@@ -7,8 +7,6 @@ using System.Transactions;
 namespace KeyCollectionTest.POC
 {
     public class CompositeKeyCollection2<TKey1, TKey2, TData> : IEnlistmentNotification
-        where TKey1 : class
-        where TKey2 : class
     {
         #region Fields
         protected Dictionary<CompositeKey<TKey1, TKey2>, TData> _dictionary;
@@ -290,13 +288,11 @@ namespace KeyCollectionTest.POC
         #endregion
     }
 
-    public class TransactionalDictionary<TKey1, TKey2, TData>
-        where TKey1 : class
-        where TKey2 : class
+    public class TransactionalCompositeKeyCollection<TKey1, TKey2, TData>
     {
         private CompositeKeyCollection2<TKey1, TKey2, TData> _compositeKeyCollection;
 
-        public TransactionalDictionary()
+        public TransactionalCompositeKeyCollection()
         {
             _compositeKeyCollection = new CompositeKeyCollection2<TKey1, TKey2, TData>();
         }

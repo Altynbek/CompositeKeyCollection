@@ -7,8 +7,8 @@
     <ProjectGuid>{C5A5FED8-2304-4889-B48A-63EF263C1691}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>KeyCollectionTest</RootNamespace>
-    <AssemblyName>KeyCollectionTest</AssemblyName>
+    <RootNamespace>CompositeKeyCollection</RootNamespace>
+    <AssemblyName>CompositeKeyCollection</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

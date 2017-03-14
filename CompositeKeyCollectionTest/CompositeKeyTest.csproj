@@ -67,7 +67,7 @@
     <Compile Include="TransactionalCompositeKeyCollectionTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\KeyCollectionTest\CompositeKeyCollection.csproj">
+    <ProjectReference Include="..\CompositeKeyCollection\CompositeKeyCollection.csproj">
       <Project>{c5a5fed8-2304-4889-b48a-63ef263c1691}</Project>
       <Name>CompositeKeyCollection</Name>
     </ProjectReference>

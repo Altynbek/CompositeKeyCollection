@@ -176,7 +176,6 @@ namespace KeyCollectionTest.POC
 
         private void Add(CompositeKey<TKey1, TKey2> key, TData data)
         {
-            Console.WriteLine("Add method invoked");
             CheckKeyParameters(key.Id, key.Name);
 
             Transaction currentTx = Transaction.Current;
@@ -264,7 +263,6 @@ namespace KeyCollectionTest.POC
 
         public void Rollback(Enlistment enlistment)
         {
-            Console.WriteLine("rollback was invoked");
             if (_tempAddedObj != null)
             {
                 var kvp = (KeyValuePair<CompositeKey<TKey1, TKey2>, TData>)_tempAddedObj;

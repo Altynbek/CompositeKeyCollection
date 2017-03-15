@@ -2,49 +2,103 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using KeyCollectionTest.Classes;
 using System.Diagnostics;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace CompositeKeyTest
 {
     [TestClass]
     public class ThreadSafePerformanceTest
     {
+        private static ThreadSafeCompositeKeyCollection<int, DateTime, string> _thSafeCollection;
+        private static Dictionary<KeyValuePair<int, DateTime>, string> _kvpDictionary;
 
-        private ThreadSafeCompositeKeyCollection<UserType, string, int> _collection = new ThreadSafeCompositeKeyCollection<UserType, string, int>();
         [TestMethod]
-        public void FindMehodPerformanceTest()
+        public void LinqComparisonTest()
         {
+            _thSafeCollection = new ThreadSafeCompositeKeyCollection<int, DateTime, string>();
+            _kvpDictionary = new Dictionary<KeyValuePair<int, DateTime>, string>();
+
             Random rnd = new Random();
-            DateTime dt = new DateTime(1800, 01, 01, 04, 50, 32);
+            DateTime dt = DateTime.Today;
 
-            UserType key1 = new UserType(dt.AddDays(55999));
-            string key2 = "Developers";
+            string value = "Developers";
             for (int idx = 0; idx < 100000; idx++)
-                _collection.Add(new UserType(dt.AddDays(-idx)), key2, rnd.Next(1, 20));
+            {
+                var datetime = dt.AddDays(-idx);
+                _kvpDictionary.Add(new KeyValuePair<int, DateTime>(idx, datetime), value);
+                _thSafeCollection.Add(idx, datetime, value);
+            }
 
-            var timeElapsed = CountSearchTime(key1, key2);
+            int key1 = 55000;
+            DateTime key2 = DateTime.Today.AddDays(-55000);
+            var customCollectionSearchTime = CountSearchTimeOnCustomCollection(key1, key2);
+            var dictionaryCollectionSearchTime = CountSearchTimeOnDictionary(key1, key2);
 
 
-            DateTime dt2 = new DateTime(2000, 01, 01, 07, 09, 25);
-            key2 = "Managers";
+            dt = new DateTime(1900, 01, 01);
             for (int idx = 0; idx < 100000; idx++)
-                _collection.Add(new UserType(dt2.AddDays(-idx)), key2, rnd.Next(1, 20));
+            {
+                var datetime = dt.AddDays(idx);
+                value = "Managers";
+                _kvpDictionary.Add(new KeyValuePair<int, DateTime>(idx, datetime), value);
+                _thSafeCollection.Add(idx, datetime, value);
+            }
 
-            var timeElapsed2 = CountSearchTime(key1, key2);
+            var customCollectionSearchTime2 = CountSearchTimeOnCustomCollection(key1, key2);
+            var dictionaryCollectionSearchTime2 = CountSearchTimeOnDictionary(key1, key2);
 
 
-            key2 = "Testers";
-            DateTime dt3 = new DateTime(2200, 01, 01, 4, 11, 10);
+            dt = new DateTime(1500, 01, 01);
             for (int idx = 0; idx < 100000; idx++)
-                _collection.Add(new UserType(dt3.AddDays(-idx)), key2, rnd.Next(1, 20));
-            
-            var timeElapsed3 = CountSearchTime(key1, key2);
+            {
+                var datetime = dt.AddMinutes(idx);
+                value = "Testers";
+                _kvpDictionary.Add(new KeyValuePair<int, DateTime>(idx, datetime), value);
+                _thSafeCollection.Add(idx, datetime, value);
+            }
+
+            var customCollectionSearchTime3 = CountSearchTimeOnCustomCollection(key1, key2);
+            var dictionaryCollectionSearchTime3 = CountSearchTimeOnDictionary(key1, key2);
+
+            dt = new DateTime(2200, 01, 01);
+            for (int idx = 0; idx < 100000; idx++)
+            {
+                var datetime = dt.AddMinutes(idx);
+                value = "Analytics";
+                _kvpDictionary.Add(new KeyValuePair<int, DateTime>(idx, datetime), value);
+                _thSafeCollection.Add(idx, datetime, value);
+            }
+
+            var customCollectionSearchTime4 = CountSearchTimeOnCustomCollection(key1, key2);
+            var dictionaryCollectionSearchTime4 = CountSearchTimeOnDictionary(key1, key2);
+
+            Debug.WriteLine("customCollectionSearchTime = {0}", customCollectionSearchTime);
+            Debug.WriteLine("dictionaryCollectionSearchTime = {0}", dictionaryCollectionSearchTime);
+            Debug.WriteLine("customCollectionSearchTime2 = {0}", customCollectionSearchTime2);
+            Debug.WriteLine("dictionaryCollectionSearchTime2 = {0}", dictionaryCollectionSearchTime2);
+            Debug.WriteLine("customCollectionSearchTime3 = {0}", customCollectionSearchTime3);
+            Debug.WriteLine("dictionaryCollectionSearchTime3 = {0}", dictionaryCollectionSearchTime3);
+            Debug.WriteLine("customCollectionSearchTime4 = {0}", customCollectionSearchTime4);
+            Debug.WriteLine("dictionaryCollectionSearchTime4 = {0}", dictionaryCollectionSearchTime4);
         }
 
-        private static TimeSpan CountSearchTime(UserType key1, string key2)
+
+        private static TimeSpan CountSearchTimeOnCustomCollection(int key1, DateTime key2)
         {
             Stopwatch sw = new Stopwatch();
             sw.Start();
+            var items = _thSafeCollection.Find(key1, key2);
+            sw.Stop();
+            var time = sw.Elapsed;
+            return time;
+        }
 
+        private static TimeSpan CountSearchTimeOnDictionary(int key1, DateTime key2)
+        {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            var item = _kvpDictionary.FirstOrDefault(x => x.Key.Key == key1 && x.Key.Value == key2);
             sw.Stop();
             var time = sw.Elapsed;
             return time;

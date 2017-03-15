@@ -6,6 +6,9 @@ using System.Transactions;
 
 namespace KeyCollectionTest.POC
 {
+    // TODO: 
+    // 1. Implement thread safe access
+    // 2. Replace CompositeKeyCollection on CompositeKeyCollection2
     public class CompositeKeyCollection2<TKey1, TKey2, TData> : IEnlistmentNotification
     {
         #region Fields
@@ -325,6 +328,12 @@ namespace KeyCollectionTest.POC
             {
                 return _compositeKeyCollection.Count;
             }
+        }
+
+        public virtual Dictionary<CompositeKey<TKey1, TKey2>, TData> Find(TKey1 key1, TKey2 key2)
+        {
+            var result = _compositeKeyCollection.Find(key1, key2);
+            return result;
         }
 
         public virtual void Clear()
